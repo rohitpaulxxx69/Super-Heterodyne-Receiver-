@@ -1,217 +1,613 @@
-Build a complete interactive web application called "Superheterodyne Receiver Visualizer" using HTML, CSS, JavaScript, SVG animations, and Chart.js.
-
-OBJECTIVE
-
-Create an educational virtual laboratory that visually demonstrates the working of a Superheterodyne Radio Receiver. The application should help Electronics and Communication Engineering students understand how a received radio signal passes through various stages of the receiver.
-
-USER INTERFACE REQUIREMENTS
-
-Create a modern engineering dashboard with the following sections:
-
-LEFT PANEL – RECEIVER CONTROLS
-
-Provide sliders and input boxes for:
-
-* Incoming RF Signal Frequency (kHz or MHz)
-* Incoming RF Signal Amplitude
-* Local Oscillator Frequency
-* Intermediate Frequency (IF)
-* Noise Level
-* Receiver Gain
-
-Provide buttons for:
-
-* Start Simulation
-* Pause Simulation
-* Reset Receiver
-* Auto Tune
-
-Display current values beside every slider.
-
-CENTER PANEL – SIGNAL FLOW DIAGRAM
-
-Display a complete Superheterodyne Receiver block diagram with animated signal flow.
-
-Include the following stages:
-
-1. Antenna
-2. RF Amplifier
-3. Mixer
-4. Local Oscillator
-5. IF Amplifier
-6. Detector / Demodulator
-7. Audio Amplifier
-8. Speaker Output
-
-Use animated arrows to show signal movement between stages.
-
-When a user clicks any block, display:
-
-* Purpose of the stage
-* Input frequency
-* Output frequency
-* Signal waveform
-
-SIGNAL PROCESSING LOGIC
-
-Implement actual Superheterodyne Receiver calculations.
-
-Calculate:
-
-IF = |RF − LO|
-
-Display this equation dynamically.
-
-Example:
-
-RF = 1000 kHz
-
-LO = 1455 kHz
-
-IF = 455 kHz
-
-Update calculations in real time whenever parameters change.
-
-WAVEFORM VISUALIZATION
-
-Display stacked oscilloscope graphs for:
-
-1. Received RF Signal
-2. Local Oscillator Signal
-3. Mixer Output Signal
-4. IF Signal
-5. Demodulated Audio Signal
-
-Update all waveforms in real time.
-
-FREQUENCY SPECTRUM ANALYZER
-
-Include a real-time FFT Spectrum Analyzer.
-
-Display:
-
-* RF Frequency
-* Local Oscillator Frequency
-* IF Frequency
-* Audio Frequency
-
-Mark frequency peaks on the graph.
-
-Allow zooming and panning.
-
-INTERACTIVE LEARNING FEATURES
-
-When users hover over any receiver stage, display:
-
-* Description
-* Mathematical explanation
-* Practical importance
-
-Example:
-
-Mixer:
-Combines the RF signal and Local Oscillator signal to generate sum and difference frequencies. The Intermediate Frequency is selected for further amplification and processing.
-
-EDUCATIONAL MODE
-
-Add a toggle called "Learning Mode".
-
-When enabled:
-
-* Highlight the active stage
-* Explain what is happening inside that stage
-* Show signal transformations step-by-step
-* Guide users through the complete receiver operation
-
-REAL RADIO PRESETS
-
-Include preset buttons for:
-
-* AM Radio Receiver (455 kHz IF)
-* FM Radio Receiver (10.7 MHz IF)
-* Shortwave Receiver
-* Aircraft Receiver
-
-Selecting a preset should automatically update all relevant parameters.
-
-FAULT INJECTION MODE
-
-Add a "Fault Injection Mode".
-
-Allow users to simulate:
-
-* RF Amplifier Failure
-* Mixer Failure
-* Local Oscillator Failure
-* IF Amplifier Failure
-
-Display the resulting effects on waveforms and output signals.
-
-Show warning messages explaining the impact of each fault.
-
-PERFORMANCE METRICS PANEL
-
-Display:
-
-* RF Frequency
-* Local Oscillator Frequency
-* Intermediate Frequency
-* Signal-to-Noise Ratio (SNR)
-* Receiver Gain
-* Tuning Accuracy
-* Signal Strength
-
-Update all values continuously.
-
-THEORY SECTION
-
-Create a dedicated educational section containing:
-
-* History of the Superheterodyne Receiver
-* Working Principle
-* Advantages
-* Applications
-* Comparison with Tuned Radio Frequency (TRF) Receivers
-
-Render mathematical equations using KaTeX.
-
-Display and explain:
-
-IF = |RF − LO|
-
-Explain why a fixed Intermediate Frequency improves receiver performance and selectivity.
-
-USER EXPERIENCE REQUIREMENTS
-
-Include:
-
-* Dark Mode and Light Mode
-* Responsive Design
-* Smooth Animations
-* Professional Engineering Dashboard Theme
-* Glassmorphism UI Elements
-* Zoomable Charts
-* Interactive Tooltips
-
-ADVANCED FEATURES
-
-Add:
-
-* Animated electron flow effects
-* Signal strength meter
-* Virtual tuning knob
-* Audio playback of recovered signal
-* Screenshot export functionality
-* PDF experiment report generation
-
-FUTURE EXPANSION
-
-Design the architecture so future modules can be added easily, including:
-
-* AM Receiver Analysis
-* FM Receiver Analysis
-* PLL Receiver
-* Software Defined Radio (SDR)
-* Complete Communication Systems Virtual Laboratory
-
-The final application should resemble a professional Electronics and Communication Engineering virtual laboratory used in universities and should visually demonstrate every stage of a Superheterodyne Receiver with real-time calculations, waveform visualization, and interactive educational content.
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Superheterodyne Receiver Visualizer - ECE Virtual Lab</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="An interactive virtual laboratory demonstrating the working principle, signal flow, waveforms, and spectrum analysis of a Superheterodyne Radio Receiver. Ideal for ECE students.">
+    <meta name="keywords" content="Superheterodyne, Radio Receiver, Mixer, Local Oscillator, Intermediate Frequency, ECE Lab, Waveform Visualizer, FFT Spectrum Analyzer, Educational Simulation">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- KaTeX for math rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    
+    <!-- Chart.js and Zoom Plugin -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
+    
+    <!-- html2canvas and jsPDF for Report Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <!-- Custom stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- HEADER -->
+        <header class="app-header glass-panel">
+            <div class="header-logo">
+                <i class="fa-solid fa-wave-square wave-icon"></i>
+                <div class="logo-text">
+                    <h1>Superheterodyne Receiver</h1>
+                    <span>VIRTUAL ENGINEERING LABORATORY</span>
+                </div>
+            </div>
+            
+            <div class="header-controls">
+                <div class="toggle-group">
+                    <label class="switch-label">Learning Mode</label>
+                    <label class="switch">
+                        <input type="checkbox" id="learning-mode-toggle">
+                        <span class="slider-toggle"></span>
+                    </label>
+                </div>
+                
+                <div class="theme-toggle" id="theme-toggle-btn" title="Toggle Light/Dark Mode">
+                    <i class="fa-solid fa-moon"></i>
+                </div>
+                
+                <button class="btn btn-secondary" id="export-img-btn" title="Export Screenshot">
+                    <i class="fa-solid fa-camera"></i> Screenshot
+                </button>
+                <button class="btn btn-primary" id="export-pdf-btn" title="Generate PDF Lab Report">
+                    <i class="fa-solid fa-file-pdf"></i> Generate PDF
+                </button>
+            </div>
+        </header>
+        <!-- MAIN LAB DASHBOARD -->
+        <div class="lab-grid">
+            
+            <!-- LEFT PANEL: RECEIVER CONTROLS -->
+            <section class="left-panel glass-panel" aria-label="Receiver Controls">
+                <div class="panel-header">
+                    <h2><i class="fa-solid fa-sliders"></i> Receiver Controls</h2>
+                </div>
+                
+                <!-- Presets selection -->
+                <div class="control-group">
+                    <label class="group-title">Receiver Presets</label>
+                    <div class="preset-buttons">
+                        <button class="preset-btn active" data-preset="am">AM Radio (455 kHz IF)</button>
+                        <button class="preset-btn" data-preset="fm">FM Radio (10.7 MHz IF)</button>
+                        <button class="preset-btn" data-preset="sw">Shortwave (455 kHz IF)</button>
+                        <button class="preset-btn" data-preset="air">Aircraft (10.7 MHz IF)</button>
+                    </div>
+                </div>
+                <!-- Frequency Mode Display (kHz vs MHz) -->
+                <div class="control-group text-center">
+                    <div class="unit-mode-badge" id="frequency-mode-badge">AM Mode: kHz operation</div>
+                </div>
+                <!-- Parameters Sliders -->
+                <div class="sliders-container">
+                    <!-- RF Frequency -->
+                    <div class="slider-box">
+                        <div class="slider-label-row">
+                            <span class="slider-title">RF Signal Frequency (<span class="freq-unit">kHz</span>)</span>
+                            <span class="slider-value" id="val-rf-freq">1000</span>
+                        </div>
+                        <div class="slider-input-wrapper">
+                            <input type="range" id="slider-rf-freq" min="540" max="1600" step="1" value="1000">
+                            <input type="number" id="num-rf-freq" min="540" max="1600" step="1" value="1000" class="num-input">
+                        </div>
+                    </div>
+                    
+                    <!-- LO Frequency -->
+                    <div class="slider-box">
+                        <div class="slider-label-row">
+                            <span class="slider-title">Local Oscillator Frequency (<span class="freq-unit">kHz</span>)</span>
+                            <span class="slider-value" id="val-lo-freq">1455</span>
+                        </div>
+                        <div class="slider-input-wrapper">
+                            <input type="range" id="slider-lo-freq" min="995" max="2055" step="1" value="1455">
+                            <input type="number" id="num-lo-freq" min="995" max="2055" step="1" value="1455" class="num-input">
+                        </div>
+                    </div>
+                    <!-- Tuning Knob Visual Widget -->
+                    <div class="tuning-knob-container">
+                        <span class="knob-label">VIRTUAL TUNING DIAL</span>
+                        <div class="tuning-knob-wrapper">
+                            <div class="tuning-knob" id="virtual-tuning-knob">
+                                <div class="knob-indicator"></div>
+                            </div>
+                        </div>
+                        <span class="knob-sub-label">Drag knob to fine-tune RF Frequency</span>
+                    </div>
+                    <!-- IF Frequency (Fixed / Lockable) -->
+                    <div class="slider-box">
+                        <div class="slider-label-row">
+                            <span class="slider-title">Intermediate Frequency (IF) (<span class="freq-unit">kHz</span>)</span>
+                            <span class="slider-value" id="val-if-freq">455</span>
+                        </div>
+                        <div class="slider-input-wrapper">
+                            <input type="range" id="slider-if-freq" min="100" max="12000" step="5" value="455">
+                            <input type="number" id="num-if-freq" min="100" max="12000" step="5" value="455" class="num-input">
+                        </div>
+                        <div class="lock-indicator" id="if-lock-container">
+                            <i class="fa-solid fa-lock"></i> Fixed IF standard locked
+                        </div>
+                    </div>
+                    <!-- RF Signal Amplitude -->
+                    <div class="slider-box">
+                        <div class="slider-label-row">
+                            <span class="slider-title">RF Signal Amplitude (µV)</span>
+                            <span class="slider-value" id="val-rf-amp">50</span>
+                        </div>
+                        <div class="slider-input-wrapper">
+                            <input type="range" id="slider-rf-amp" min="5" max="500" step="5" value="50">
+                            <input type="number" id="num-rf-amp" min="5" max="500" step="5" value="50" class="num-input">
+                        </div>
+                    </div>
+                    <!-- Noise Level -->
+                    <div class="slider-box">
+                        <div class="slider-label-row">
+                            <span class="slider-title">Noise Level (µV)</span>
+                            <span class="slider-value" id="val-noise-lvl">5</span>
+                        </div>
+                        <div class="slider-input-wrapper">
+                            <input type="range" id="slider-noise-lvl" min="0" max="100" step="1" value="5">
+                            <input type="number" id="num-noise-lvl" min="0" max="100" step="1" value="5" class="num-input">
+                        </div>
+                    </div>
+                    <!-- Receiver Gain -->
+                    <div class="slider-box">
+                        <div class="slider-label-row">
+                            <span class="slider-title">Receiver Gain (dB)</span>
+                            <span class="slider-value" id="val-gain">40</span>
+                        </div>
+                        <div class="slider-input-wrapper">
+                            <input type="range" id="slider-gain" min="0" max="80" step="1" value="40">
+                            <input type="number" id="num-gain" min="0" max="80" step="1" value="40" class="num-input">
+                        </div>
+                    </div>
+                </div>
+                <!-- Simulation Controls Buttons -->
+                <div class="action-buttons">
+                    <button class="btn btn-success" id="btn-start"><i class="fa-solid fa-play"></i> Start</button>
+                    <button class="btn btn-warning" id="btn-pause" disabled><i class="fa-solid fa-pause"></i> Pause</button>
+                    <button class="btn btn-info" id="btn-autotune"><i class="fa-solid fa-wand-magic-sparkles"></i> Auto Tune</button>
+                    <button class="btn btn-danger" id="btn-reset"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+                </div>
+                <!-- Audio Playback controls -->
+                <div class="audio-control-card glass-card">
+                    <span class="audio-card-title"><i class="fa-solid fa-volume-high"></i> Demodulated Audio Output</span>
+                    <div class="audio-card-controls">
+                        <button class="btn btn-circle" id="btn-audio-mute" title="Mute/Unmute audio synthesis">
+                            <i class="fa-solid fa-volume-xmark"></i>
+                        </button>
+                        <div class="vol-slider-wrapper">
+                            <i class="fa-solid fa-volume-low"></i>
+                            <input type="range" id="slider-audio-vol" min="0" max="100" step="5" value="30">
+                            <i class="fa-solid fa-volume-high"></i>
+                        </div>
+                    </div>
+                    <span class="audio-card-note">Synthesizes a 1 kHz audio signal based on signal strength.</span>
+                </div>
+            </section>
+            <!-- CENTER PANEL: SIGNAL FLOW DIAGRAM -->
+            <section class="center-panel glass-panel" aria-label="Signal Flow Diagram">
+                <div class="panel-header">
+                    <h2><i class="fa-solid fa-network-wired"></i> Receiver Signal Flow Block Diagram</h2>
+                </div>
+                <!-- SVG Block Diagram -->
+                <div class="block-diagram-container">
+                    <svg viewBox="0 0 1000 320" width="100%" height="100%" id="receiver-svg" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <!-- Arrow Marker -->
+                            <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                <path d="M 0 1 L 10 5 L 0 9 z" fill="var(--svg-flow-color)" />
+                            </marker>
+                            
+                            <!-- Electron flow glow filter -->
+                            <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                                <feGaussianBlur stdDeviation="3" result="blur" />
+                                <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                            </filter>
+                        </defs>
+                        <!-- CONNECTIONS (Signal Paths) -->
+                        <!-- Antenna to RF Amp -->
+                        <path id="path-ant-rf" d="M 90 90 L 140 90" stroke="var(--svg-path-inactive)" stroke-width="3" fill="none" />
+                        <!-- RF Amp to Mixer -->
+                        <path id="path-rf-mix" d="M 240 90 L 320 90" stroke="var(--svg-path-inactive)" stroke-width="3" fill="none" />
+                        <!-- LO to Mixer -->
+                        <path id="path-lo-mix" d="M 370 210 L 370 140" stroke="var(--svg-path-inactive)" stroke-width="3" fill="none" />
+                        <!-- Mixer to IF Amp -->
+                        <path id="path-mix-if" d="M 420 90 L 480 90" stroke="var(--svg-path-inactive)" stroke-width="3" fill="none" />
+                        <!-- IF Amp to Detector -->
+                        <path id="path-if-det" d="M 580 90 L 640 90" stroke="var(--svg-path-inactive)" stroke-width="3" fill="none" />
+                        <!-- Detector to Audio Amp -->
+                        <path id="path-det-aud" d="M 740 90 L 800 90" stroke="var(--svg-path-inactive)" stroke-width="3" fill="none" />
+                        <!-- Audio Amp to Speaker -->
+                        <path id="path-aud-spk" d="M 900 90 L 930 90" stroke="var(--svg-path-inactive)" stroke-width="3" fill="none" />
+                        <!-- Flow Path Animations (Marching Ants / Electron Flow) -->
+                        <path class="flow-line" id="flow-ant-rf" d="M 90 90 L 140 90" stroke="var(--accent-rf)" stroke-width="4" stroke-dasharray="8 6" fill="none" opacity="0"/>
+                        <path class="flow-line" id="flow-rf-mix" d="M 240 90 L 320 90" stroke="var(--accent-rf)" stroke-width="4" stroke-dasharray="8 6" fill="none" opacity="0"/>
+                        <path class="flow-line" id="flow-lo-mix" d="M 370 210 L 370 140" stroke="var(--accent-lo)" stroke-width="4" stroke-dasharray="8 6" fill="none" opacity="0"/>
+                        <path class="flow-line" id="flow-mix-if" d="M 420 90 L 480 90" stroke="var(--accent-mix)" stroke-width="4" stroke-dasharray="8 6" fill="none" opacity="0"/>
+                        <path class="flow-line" id="flow-if-det" d="M 580 90 L 640 90" stroke="var(--accent-if)" stroke-width="4" stroke-dasharray="8 6" fill="none" opacity="0"/>
+                        <path class="flow-line" id="flow-det-aud" d="M 740 90 L 800 90" stroke="var(--accent-audio)" stroke-width="4" stroke-dasharray="8 6" fill="none" opacity="0"/>
+                        <path class="flow-line" id="flow-aud-spk" d="M 900 90 L 930 90" stroke="var(--accent-audio)" stroke-width="4" stroke-dasharray="8 6" fill="none" opacity="0"/>
+                        <!-- BLOCKS -->
+                        
+                        <!-- 1. Antenna -->
+                        <g class="block-group clickable" id="block-antenna" data-stage="antenna">
+                            <!-- Antenna shape -->
+                            <line x1="60" y1="90" x2="60" y2="40" stroke="var(--svg-text)" stroke-width="3" />
+                            <line x1="60" y1="40" x2="40" y2="20" stroke="var(--svg-text)" stroke-width="3" />
+                            <line x1="60" y1="40" x2="80" y2="20" stroke="var(--svg-text)" stroke-width="3" />
+                            <line x1="60" y1="40" x2="60" y2="20" stroke="var(--svg-text)" stroke-width="3" />
+                            <circle cx="60" cy="90" r="4" fill="var(--svg-text)" />
+                            <text x="60" y="115" class="svg-label" text-anchor="middle">Antenna</text>
+                            <rect class="click-catcher" x="30" y="10" width="60" height="110" fill="transparent" />
+                        </g>
+                        <!-- 2. RF Amplifier -->
+                        <g class="block-group clickable" id="block-rf-amp" data-stage="rf_amp">
+                            <rect class="block-rect rf-border" x="140" y="50" width="100" height="80" rx="8" />
+                            <path d="M 160 110 L 210 90 L 160 70 Z" fill="none" stroke="var(--accent-rf)" stroke-width="2" />
+                            <text x="190" y="95" class="svg-block-sym" text-anchor="middle">RF</text>
+                            <text x="190" y="145" class="svg-label" text-anchor="middle">RF Amplifier</text>
+                        </g>
+                        <!-- 3. Mixer -->
+                        <g class="block-group clickable" id="block-mixer" data-stage="mixer">
+                            <rect class="block-rect mixer-border" x="320" y="50" width="100" height="80" rx="8" />
+                            <!-- Mixer cross symbol -->
+                            <circle cx="370" cy="90" r="25" fill="none" stroke="var(--accent-mix)" stroke-width="2" />
+                            <line x1="352.3" y1="72.3" x2="387.7" y2="107.7" stroke="var(--accent-mix)" stroke-width="2" />
+                            <line x1="352.3" y1="107.7" x2="387.7" y2="72.3" stroke="var(--accent-mix)" stroke-width="2" />
+                            <text x="370" y="145" class="svg-label" text-anchor="middle">Mixer</text>
+                        </g>
+                        <!-- 4. Local Oscillator -->
+                        <g class="block-group clickable" id="block-lo" data-stage="local_osc">
+                            <rect class="block-rect lo-border" x="320" y="210" width="100" height="80" rx="8" />
+                            <!-- Sine wave symbol inside LO -->
+                            <path d="M 345 250 Q 355 235 365 250 T 385 250" fill="none" stroke="var(--accent-lo)" stroke-width="2" />
+                            <text x="370" y="275" class="svg-block-sym" text-anchor="middle">LO (~)</text>
+                            <text x="370" y="305" class="svg-label" text-anchor="middle">Local Osc.</text>
+                        </g>
+                        <!-- 5. IF Amplifier -->
+                        <g class="block-group clickable" id="block-if-amp" data-stage="if_amp">
+                            <rect class="block-rect if-border" x="480" y="50" width="100" height="80" rx="8" />
+                            <path d="M 500 110 L 550 90 L 500 70 Z" fill="none" stroke="var(--accent-if)" stroke-width="2" />
+                            <text x="530" y="95" class="svg-block-sym" text-anchor="middle">IF</text>
+                            <text x="530" y="145" class="svg-label" text-anchor="middle">IF Amp</text>
+                        </g>
+                        <!-- 6. Detector -->
+                        <g class="block-group clickable" id="block-detector" data-stage="detector">
+                            <rect class="block-rect det-border" x="640" y="50" width="100" height="80" rx="8" />
+                            <!-- Diode symbol -->
+                            <line x1="675" y1="90" x2="705" y2="90" stroke="var(--accent-detector)" stroke-width="2" />
+                            <polygon points="685,80 685,100 700,90" fill="var(--accent-detector)" stroke="var(--accent-detector)" stroke-width="2" />
+                            <line x1="700" y1="80" x2="700" y2="100" stroke="var(--accent-detector)" stroke-width="2" />
+                            <text x="690" y="145" class="svg-label" text-anchor="middle">Demodulator</text>
+                        </g>
+                        <!-- 7. Audio Amplifier -->
+                        <g class="block-group clickable" id="block-audio-amp" data-stage="audio_amp">
+                            <rect class="block-rect aud-border" x="800" y="50" width="100" height="80" rx="8" />
+                            <path d="M 820 110 L 870 90 L 820 70 Z" fill="none" stroke="var(--accent-audio)" stroke-width="2" />
+                            <text x="850" y="95" class="svg-block-sym" text-anchor="middle">AF</text>
+                            <text x="850" y="145" class="svg-label" text-anchor="middle">Audio Amp</text>
+                        </g>
+                        <!-- 8. Speaker -->
+                        <g class="block-group clickable" id="block-speaker" data-stage="speaker">
+                            <!-- Speaker shape -->
+                            <path d="M 940 75 L 940 105 L 955 115 L 970 115 L 970 65 L 955 65 Z" fill="none" stroke="var(--svg-text)" stroke-width="2" />
+                            <!-- Sound waves -->
+                            <path id="spk-wave-1" d="M 977 82 A 10 10 0 0 1 977 98" fill="none" stroke="var(--svg-text)" stroke-width="1.5" />
+                            <path id="spk-wave-2" d="M 982 77 A 15 15 0 0 1 982 103" fill="none" stroke="var(--svg-text)" stroke-width="1.5" />
+                            <text x="955" y="145" class="svg-label" text-anchor="middle">Speaker</text>
+                            <rect class="click-catcher" x="930" y="40" width="55" height="110" fill="transparent" />
+                        </g>
+                    </svg>
+                </div>
+                <!-- Fault Injection Mode Dashboard -->
+                <div class="fault-injection-box glass-card">
+                    <span class="card-subtitle"><i class="fa-solid fa-triangle-exclamation"></i> Fault Injection Console</span>
+                    <div class="fault-switches">
+                        <div class="fault-switch">
+                            <label class="switch-lbl">RF Amp Fault</label>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="fault-rf" class="fault-trigger">
+                                <span class="slider-toggle fault"></span>
+                            </label>
+                        </div>
+                        <div class="fault-switch">
+                            <label class="switch-lbl">Mixer Fault</label>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="fault-mixer" class="fault-trigger">
+                                <span class="slider-toggle fault"></span>
+                            </label>
+                        </div>
+                        <div class="fault-switch">
+                            <label class="switch-lbl">LO Fault</label>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="fault-lo" class="fault-trigger">
+                                <span class="slider-toggle fault"></span>
+                            </label>
+                        </div>
+                        <div class="fault-switch">
+                            <label class="switch-lbl">IF Amp Fault</label>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="fault-if" class="fault-trigger">
+                                <span class="slider-toggle fault"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="fault-warning-banner hidden" id="fault-alert-banner">
+                        <i class="fa-solid fa-circle-exclamation blink-icon"></i>
+                        <span id="fault-alert-msg">Fault Detected: Receiver Signal Chain Broken!</span>
+                    </div>
+                </div>
+                <!-- Clicked Stage Info Panel -->
+                <div class="stage-info-card glass-card" id="stage-info-panel">
+                    <div class="info-card-header">
+                        <h3 id="stage-info-title">Stage Details: Antenna</h3>
+                        <span class="badge" id="stage-info-badge">STAGE 1</span>
+                    </div>
+                    <div class="info-card-content">
+                        <p id="stage-info-desc">Click on any block in the receiver flow diagram above to view its operation, inputs, outputs, and mathematical signal representations.</p>
+                        <div class="stage-math-row hidden" id="stage-info-math-box">
+                            <strong>Formula:</strong> <span id="stage-info-formula"></span>
+                        </div>
+                        <div class="stage-metrics-row hidden" id="stage-info-frequencies">
+                            <div><strong>Input Freq:</strong> <span id="stage-info-fin">1000 kHz</span></div>
+                            <div><strong>Output Freq:</strong> <span id="stage-info-fout">1000 kHz</span></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Learning/Guide Modal Overlay -->
+                <div class="learning-wizard-card glass-card hidden" id="learning-wizard-box">
+                    <div class="wizard-header">
+                        <span class="wizard-step-title"><i class="fa-solid fa-graduation-cap"></i> Interactive Tutorial</span>
+                        <button class="btn btn-close" id="btn-close-wizard">&times;</button>
+                    </div>
+                    <div class="wizard-content">
+                        <h4 id="wizard-stage-name">1. Antenna Stage</h4>
+                        <p id="wizard-stage-text">The antenna captures the incoming electromagnetic waves from space, transforming them into a high-frequency electrical signal containing noise and interference.</p>
+                        <div class="wizard-actions">
+                            <button class="btn btn-secondary btn-sm" id="btn-wizard-prev" disabled>Previous</button>
+                            <span class="wizard-progress" id="wizard-progress-txt">1 / 8</span>
+                            <button class="btn btn-primary btn-sm" id="btn-wizard-next">Next Stage</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- RIGHT PANEL: PERFORMANCE METRICS -->
+            <section class="right-panel glass-panel" aria-label="Performance Metrics">
+                <div class="panel-header">
+                    <h2><i class="fa-solid fa-chart-line"></i> Performance & Calculations</h2>
+                </div>
+                <!-- Live Mathematical Calculator -->
+                <div class="calculations-box glass-card">
+                    <span class="card-subtitle"><i class="fa-solid fa-square-root-variable"></i> Superheterodyne Equation</span>
+                    <div class="math-formula-display" id="math-formula-container">
+                        $$IF = |RF - LO|$$
+                    </div>
+                    <div class="live-calc-display" id="live-calculation-values">
+                        $$455\text{ kHz} = |1000\text{ kHz} - 1455\text{ kHz}|$$
+                    </div>
+                    <div class="injection-badge text-center" id="injection-type-badge">
+                        High-Side Injection (LO > RF)
+                    </div>
+                </div>
+                <!-- Metrics Dashboard Panel -->
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <span class="metric-name">Tuning Mismatch</span>
+                        <span class="metric-value text-warning" id="metric-tuning-mismatch">0.0 kHz</span>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <span class="metric-name">Tuning Accuracy</span>
+                        <span class="metric-value text-success" id="metric-tuning-accuracy">100.0%</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-name">Signal to Noise (SNR)</span>
+                        <span class="metric-value text-info" id="metric-snr">20.0 dB</span>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <span class="metric-name">IF Gain Margin</span>
+                        <span class="metric-value text-primary" id="metric-gain">40.0 dB</span>
+                    </div>
+                </div>
+                <!-- Signal Strength Indicator (Analog Meter representation) -->
+                <div class="signal-strength-box glass-card">
+                    <div class="meter-labels">
+                        <span>Signal Strength</span>
+                        <span id="meter-db-value">-60 dBm</span>
+                    </div>
+                    <div class="analog-meter-container">
+                        <div class="analog-meter-scale">
+                            <span class="scale-mark" style="left: 0%;">S0</span>
+                            <span class="scale-mark" style="left: 33%;">S5</span>
+                            <span class="scale-mark" style="left: 66%;">S9</span>
+                            <span class="scale-mark" style="left: 100%;">S9+30</span>
+                        </div>
+                        <div class="analog-meter-bg">
+                            <div class="analog-meter-bar" id="signal-meter-bar"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <!-- WAVEFORM AND SPECTRUM PLOTS SECTION -->
+        <section class="plots-section glass-panel">
+            <div class="plots-tabs">
+                <button class="plot-tab-btn active" data-tab="oscilloscopes"><i class="fa-solid fa-chart-area"></i> Time-Domain Oscilloscopes</button>
+                <button class="plot-tab-btn" data-tab="spectrum"><i class="fa-solid fa-chart-column"></i> FFT Spectrum Analyzer</button>
+            </div>
+            <!-- Tab 1: Oscilloscopes -->
+            <div class="tab-content" id="tab-oscilloscopes">
+                <div class="oscilloscopes-grid">
+                    <!-- RF Waveform -->
+                    <div class="scope-card">
+                        <div class="scope-header">
+                            <span>1. Received RF Waveform (Antenna / RF Amp Output)</span>
+                            <span class="scope-freq-indicator" id="scope-rf-freq">1000 kHz</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="canvas-rf"></canvas>
+                        </div>
+                    </div>
+                    <!-- LO Waveform -->
+                    <div class="scope-card">
+                        <div class="scope-header">
+                            <span>2. Local Oscillator (LO) Waveform</span>
+                            <span class="scope-freq-indicator" id="scope-lo-freq">1455 kHz</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="canvas-lo"></canvas>
+                        </div>
+                    </div>
+                    <!-- Mixer Waveform -->
+                    <div class="scope-card">
+                        <div class="scope-header">
+                            <span>3. Mixer Output Waveform (Sum, Difference & Feedthrough)</span>
+                            <span class="scope-freq-indicator" id="scope-mix-freq">RF &plusmn; LO</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="canvas-mix"></canvas>
+                        </div>
+                    </div>
+                    <!-- IF Waveform -->
+                    <div class="scope-card">
+                        <div class="scope-header">
+                            <span>4. IF Filtered Output Waveform (Intermediate Frequency)</span>
+                            <span class="scope-freq-indicator" id="scope-if-freq">455 kHz</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="canvas-if"></canvas>
+                        </div>
+                    </div>
+                    <!-- Audio Waveform -->
+                    <div class="scope-card full-width-scope">
+                        <div class="scope-header">
+                            <span>5. Recovered Demodulated Audio Signal</span>
+                            <span class="scope-freq-indicator" id="scope-audio-freq">1.0 kHz Tone</span>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="canvas-audio"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Tab 2: FFT Spectrum Analyzer -->
+            <div class="tab-content hidden" id="tab-spectrum">
+                <div class="spectrum-container">
+                    <div class="spectrum-controls-row">
+                        <span class="spectrum-note"><i class="fa-solid fa-circle-info"></i> Drag or scroll on the graph to Zoom and Pan the frequency domain.</span>
+                        <button class="btn btn-secondary btn-sm" id="btn-reset-zoom"><i class="fa-solid fa-magnifying-glass-minus"></i> Reset Zoom</button>
+                    </div>
+                    <div class="spectrum-chart-wrapper">
+                        <canvas id="chart-spectrum"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- THEORETICAL EDUCATION SECTION -->
+        <section class="theory-section glass-panel">
+            <div class="panel-header">
+                <h2><i class="fa-solid fa-book-open"></i> Superheterodyne Receiver Principles</h2>
+            </div>
+            
+            <div class="theory-grid">
+                <!-- Theory Text Column 1 -->
+                <div class="theory-col">
+                    <h3>1. Historical Context</h3>
+                    <p>
+                        Invented by legendary engineer <strong>Edwin Armstrong</strong> in 1918 during World War I, the Superheterodyne (often shortened to "superhet") receiver revolutionized radio communications. Before the superhet, receivers like the <em>Tuned Radio Frequency (TRF)</em> receiver required multiple tuning stages that had to be adjusted in unison to pick up different frequencies. This was difficult to construct, prone to instability, and had poor selectivity at higher frequencies.
+                    </p>
+                    
+                    <h3>2. Working Principle</h3>
+                    <p>
+                        The key breakthrough of the superheterodyne design is **heterodyning** (mixing) the incoming radio frequency (RF) signal with a variable frequency signal generated inside the receiver by a <strong>Local Oscillator (LO)</strong>.
+                    </p>
+                    <p>
+                        When the RF carrier $f_{RF}$ and the Local Oscillator signal $f_{LO}$ are multiplied in a non-linear device (the **Mixer**), they produce new frequencies corresponding to the sum and difference of the original signals:
+                    </p>
+                    <div class="math-block">
+                        $$f_{products} = f_{LO} \pm f_{RF}$$
+                    </div>
+                    <p>
+                        By tuning the LO in tandem with the RF stage, the receiver maintains a constant difference frequency called the **Intermediate Frequency (IF)**:
+                    </p>
+                    <div class="math-block">
+                        $$f_{IF} = |f_{RF} - f_{LO}|$$
+                    </div>
+                    <p>
+                        The mixer output is passed into a highly selective bandpass filter centered at this fixed $f_{IF}$. Since all incoming signals are converted to the same IF, all downstream amplification and filtering occur at a single frequency.
+                    </p>
+                </div>
+                <!-- Theory Text Column 2 -->
+                <div class="theory-col">
+                    <h3>3. Why a Fixed IF Improves Performance</h3>
+                    <ul>
+                        <li>
+                            <strong>Selectivity:</strong> Standard bandpass filters have a constant bandwidth. Designing high-selectivity bandpass filters that sweep across wide frequencies is extremely difficult. A fixed-frequency IF amplifier can use highly optimized, high-$Q$ ceramic or crystal filters with steep skirts to reject adjacent interfering channels.
+                        </li>
+                        <li>
+                            <strong>Constant Gain:</strong> Amplifiers are easier to design for stable, high gain at a single frequency than across a broad tuning range. Swept RF amplifiers often suffer from varying gain and oscillation at high frequencies.
+                        </li>
+                        <li>
+                            <strong>Image Frequency Rejection:</strong> An undesired frequency $f_{Image} = f_{LO} + f_{IF}$ (when using high-side injection) will also mix with $f_{LO}$ to produce $f_{IF}$. The pre-selection RF filter rejects this image signal before it reaches the mixer.
+                        </li>
+                    </ul>
+                    <h3>4. Superhet vs. TRF Receivers</h3>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>TRF Receiver</th>
+                                <th>Superheterodyne Receiver</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Tuning Complexity</strong></td>
+                                <td>High (Multiple ganged RF stages)</td>
+                                <td>Low (Only RF and LO tune together)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Selectivity</strong></td>
+                                <td>Varies with RF carrier frequency</td>
+                                <td>High & Constant (determined by fixed IF stage)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sensitivity</strong></td>
+                                <td>Low (Risk of feedback oscillations at high gains)</td>
+                                <td>Very High (Stable high-gain IF amplifiers)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Image Response</strong></td>
+                                <td>None</td>
+                                <td>Requires RF pre-filter to reject $f_{Image}$</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h3>5. Applications</h3>
+                    <p>
+                        Virtually all modern wireless receivers, including AM/FM radios, television tuners, radar, satellite systems, Wi-Fi routers, and cellular modems, utilize the superheterodyne architecture or its direct descendant, the zero-IF direct-conversion receiver.
+                    </p>
+                </div>
+            </div>
+        </section>
+        <!-- FOOTER -->
+        <footer class="app-footer text-center">
+            <p>&copy; 2026 ECE Virtual Laboratory. Designed for Electronics & Communication Engineering education.</p>
+        </footer>
+    </div>
+    <!-- Script File -->
+    <script src="app.js"></script>
+</body>
+</html>
